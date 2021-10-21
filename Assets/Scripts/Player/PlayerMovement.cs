@@ -9,6 +9,10 @@ public class PlayerMovement : MonoBehaviour
     int floorMask;
     float camRayLength = 100f;
 
+    public float moveMultiplier = 1;
+    public float maxMultiplier = 10;
+    float multiplierTimer = 0;
+
     private void Awake()
     {
         floorMask = LayerMask.GetMask("Floor");
@@ -16,6 +20,18 @@ public class PlayerMovement : MonoBehaviour
         anim = GetComponent<Animator>();
 
         playerRigidbody = GetComponent<Rigidbody>();
+    }
+
+    private void Update()
+    {
+        if (multiplierTimer > 0)
+        {
+            multiplierTimer -= Time.deltaTime;
+        }
+        if (multiplierTimer <= 0)
+        {
+            ResetMoveMult();
+        }
     }
 
     private void FixedUpdate()
@@ -36,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
     {
         movement.Set(h, 0f, v);
 
-        movement = movement.normalized * speed * Time.deltaTime;
+        movement = movement.normalized * speed * moveMultiplier * Time.deltaTime;
 
         playerRigidbody.MovePosition(transform.position + movement);
     }
@@ -62,5 +78,21 @@ public class PlayerMovement : MonoBehaviour
     {
         bool walking = h != 0f || v != 0f;
         anim.SetBool("IsWalking", walking);
+    }
+
+    void ResetMoveMult()
+    {
+        moveMultiplier = 1;
+        multiplierTimer = 0;
+    }
+
+    public void AddMoveMult(float multiplier, float timer)
+    {
+        moveMultiplier *= multiplier;
+        if (moveMultiplier >= maxMultiplier)
+            {
+            moveMultiplier = multiplier;
+            }
+        multiplierTimer = timer;
     }
 }

@@ -80,6 +80,17 @@ public class PlayerHealth : MonoBehaviour
         playerShooting.enabled = false;
     }
 
+    public void Heal(int amount)
+    {
+        currentHealth += amount;
+        if (currentHealth >= startingHealth)
+        {
+            currentHealth = startingHealth;
+        }
+
+        healthSlider.value = currentHealth;
+    }
+
     public void RestartLevel()
     {
         //SceneManager.LoadScene(0);
